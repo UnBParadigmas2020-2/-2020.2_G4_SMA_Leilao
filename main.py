@@ -1,16 +1,7 @@
-# agent_example_1.py
-# A simple hello agent in PADE!
-
-from pade.misc.utility import display_message, start_loop
-from pade.core.agent import Agent
+from agentes.agent_example_1 import AgenteHelloWorld
+from pade.misc.utility import start_loop
 from pade.acl.aid import AID
 from sys import argv
-
-class AgenteHelloWorld(Agent):
-    def __init__(self, aid):
-        super(AgenteHelloWorld, self).__init__(aid=aid)
-        display_message(self.aid.localname, 'Hello World!')
-
 
 if __name__ == '__main__':
     agents_per_process = 3
