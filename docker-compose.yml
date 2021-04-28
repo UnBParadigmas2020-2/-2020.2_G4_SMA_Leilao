@@ -1,0 +1,12 @@
+version: "3.5"
+services:
+  pade:
+    build: .
+    ports:
+      - "5000:5000"
+      - "20000:20000"
+    tty: true
+    stdin_open: true
+    command: /bin/bash
+    volumes:
+      - .:/app
