@@ -50,10 +50,12 @@ class AnalisaLances(TimedBehaviour):
         # Se ja tiverem lances registrados, vemos o atual maior lance e definimos ele como novo minimo
         if self.agent.lances:
             novo_lance_minimo =  max(self.agent.lances.values())
+            display_message(self.agent.aid.name, 'Novo valor a bater {}'.format(novo_lance_minimo))
 
         # Caso contrario, damos o primeiro lance minimo do leilao. Que deveria vir do objeto leiloado    
         else:
-            novo_lance_minimo = 3000
+            novo_lance_minimo = self.agent.objeto_leiloado.valor_inicial
+            display_message(self.agent.aid.name, 'Iniciando leilão do item {} com valor inicial de R${}'.format(self.agent.objeto_leiloado.nome, novo_lance_minimo))
 
         # usa o protocolo do editor para mandar o novo lance minimo a todos os compradores
         message.set_content(f'lance:{novo_lance_minimo}')
@@ -66,9 +68,10 @@ class AgenteLeiloeiro(Agent):
     lances = {}
 
     # inicializando agente, protocolos e comportamentos
-    def __init__(self, aid, f):
+    def __init__(self, aid, f, objeto):
         super(AgenteLeiloeiro, self).__init__(aid=aid, debug=False)
         self.f = f
+        self.objeto_leiloado = objeto
         self.protocol = PublisherProtocol(self)
         self.behaviours.append(self.protocol)
         self.analisa_lances = AnalisaLances(self, self.protocol.notify)
@@ -80,6 +83,7 @@ class AgenteLeiloeiro(Agent):
     # isso aqui executa toda vez que algum comprador manda uma mensagem ao leiloeiro
     def react(self, message):
         super(AgenteLeiloeiro, self).react(message)
+
         if self.f.filter(message):
 
             # o prefixo lance esta sendo usado para identificar que é um lance do comprador
