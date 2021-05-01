@@ -3,6 +3,7 @@ from pade.misc.utility import display_message, call_later
 from pade.acl.messages import ACLMessage
 from pade.core.agent import Agent
 from pade.acl.aid import AID
+from random import randint
 
 
 # Protocolo do assinante. Assina o protocolo do leiloeiro
@@ -39,7 +40,6 @@ class AgenteComprador(Agent):
         message.set_content(msg)
         self.send(message)
 
-
     # faz a assinatura no protocolo do leiloeiro, para receber mensagens referentes ao novo lance minimo 
     def launch_subscriber_protocol(self):
         message = ACLMessage(ACLMessage.SUBSCRIBE)
@@ -49,7 +49,7 @@ class AgenteComprador(Agent):
         self.protocol = SubscriberProtocol(self, message)
         self.behaviours.append(self.protocol)
         self.protocol.on_start()
-    
+
    # rola quando  o agente é iniciado
     def on_start(self):
         super(AgenteComprador, self).on_start()
@@ -64,16 +64,16 @@ class AgenteComprador(Agent):
     def lance(self, msg):
         if str(msg).startswith("lance"):
             lance_minimo = float(str(msg).split(":")[1])
-            display_message(self.aid.name, f'novo lance a bater {lance_minimo}')
             
             # um criterio arbitrario, dizendo que o comprador nao vai dar um lance maior que 60% da grana que ele tem
-            if(lance_minimo > self.dinheiro * 0.6 ):
-                display_message(self.aid.localname, 'Não possuo mais dinheiro')
-                # manda mensagem ao leiloeiro com o lance
-                self.send_message(f"lance:{self.dinheiro * 0.6}")
+            if(lance_minimo >= self.dinheiro):
+                # retirar agente do leilão
             else:
                 # manda mensagem ao leiloeiro com o lance
-                self.send_message(f"lance:{lance_minimo}")
+                valor_desejado = lance_minimo + lance_minimo * 0.4
+                valor =  self.dinheiro if valor_desejado > self.dinheiro else valor_desejado
+                novo_lance = randint(lance_minimo, int(valor))
+                self.send_message(f"lance:{novo_lance}")
 
         
     # Essa funcao aqui serve pra reagir a uma mensagem recebida pelo leiloeiro
