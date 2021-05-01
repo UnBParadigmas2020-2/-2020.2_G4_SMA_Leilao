@@ -18,7 +18,7 @@ class SubscriberProtocol(FipaSubscribeProtocol):
 
     # leiloeiro confirmou o registro do comprador
     def handle_agree(self, message):
-        display_message(self.agent.aid.name, "Confirmação recebida")
+        self.agent.logger.log(self.agent.aid.name, "Confirmação recebida")
     
     # isso executa toda vez que o comprador recebe uma mensagem atraves desse protocolo
     def handle_inform(self, message):
@@ -27,11 +27,12 @@ class SubscriberProtocol(FipaSubscribeProtocol):
 class AgenteComprador(Agent):
 
     # inicializando comprador
-    def __init__(self, aid, f, dinheiro = 0):
+    def __init__(self, aid, f, logger, dinheiro = 0):
         super(AgenteComprador, self).__init__(aid=aid)
+        self.logger = logger
         self.dinheiro = dinheiro
         self.f = f
-        display_message(self.aid.localname, 'O agente {} possue R${}'.format(self.aid.localname, self.dinheiro))
+        self.logger.log(self.aid.localname, 'O agente {} possue R${}'.format(self.aid.localname, self.dinheiro))
 
     # helper function para mandar uma mensagem ao leiloeiro, usada pra enviar o lance do comprador
     def send_message(self, msg):
@@ -56,7 +57,7 @@ class AgenteComprador(Agent):
 
         # chama a funcao que faz a assinatura do protocolo do leiloeiro
         # isso apos 8 segundos, pra dar tempo do leiloeiro ter iniciado
-        display_message(self.aid.localname, 'Registrando-me no leilão...')
+        self.logger.log(self.aid.localname, 'Registrando-me no leilão...')
         call_later(8.0, self.launch_subscriber_protocol)
 
     # essa funcao é executada pelo SubscriberProtocol, quando recebemos o novo lance minimo do leiloeiro
@@ -67,6 +68,7 @@ class AgenteComprador(Agent):
             
             # um criterio arbitrario, dizendo que o comprador nao vai dar um lance maior que 60% da grana que ele tem
             if(lance_minimo >= self.dinheiro):
+                print('sem grana')
                 # retirar agente do leilão
             else:
                 # manda mensagem ao leiloeiro com o lance
@@ -86,5 +88,5 @@ class AgenteComprador(Agent):
             # por isso nao usamos o SubscriberProtocol, que é pra quando a mensagem é pra todos os compradores 
             if f'{message.content}'.startswith("vencedor:"):
                 # Aqui provavelmente encerrariamos as atividades
-                display_message(self.aid.localname,
+                self.agent.log(self.aid.localname,
                                 f'Venci o leilao')

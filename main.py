@@ -1,6 +1,7 @@
 from agentes.agente_comprador import AgenteComprador
 from agentes.agente_leiloeiro import AgenteLeiloeiro
 from classes.objeto_leiloado import ObjetoLeiloado
+from classes.logger import Logger
 from pade.misc.utility import start_loop
 from pade.acl.messages import ACLMessage
 from pade.acl.filters import Filter
@@ -17,12 +18,14 @@ def main():
   agents = list()
   port = int(argv[1]) 
 
+  logger = Logger()
+
   # criando objeto a ser leiloado
   objeto = ObjetoLeiloado('Vaso Antigo', 40)
   
   # criando agente leiloeiro
   agente_leiloeiro = AgenteLeiloeiro(
-      AID(name=f'leiloeiro@localhost:{port}'),f, objeto)
+      AID(name=f'leiloeiro@localhost:{port}'),f, objeto, logger)
   agents.append(agente_leiloeiro)  
 
   port += 1
@@ -31,7 +34,7 @@ def main():
   for i in range(numero_de_compradores):
       # criando agentes compradores
       agent_dinheiro = randint(100,1000)
-      agente_comprador = AgenteComprador(AID(name=f'comprador_{i}@localhost:{port+i}'), f, agent_dinheiro)
+      agente_comprador = AgenteComprador(AID(name=f'comprador_{i}@localhost:{port+i}'), f, logger,agent_dinheiro)
       agents.append(agente_comprador)
 
   start_loop(agents)

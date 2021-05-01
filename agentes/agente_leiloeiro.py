@@ -17,7 +17,7 @@ class PublisherProtocol(FipaSubscribeProtocol):
     # isso seria registro no leilao
     def handle_subscribe(self, message):
         self.register(message.sender)
-        display_message(self.agent.aid.name, message.content)
+        self.agent.logger.log(self.agent.aid.name, message.content)
         resposta = message.create_reply()
         resposta.set_performative(ACLMessage.AGREE)
         resposta.set_content('OK')
@@ -25,7 +25,7 @@ class PublisherProtocol(FipaSubscribeProtocol):
 
     def handle_cancel(self, message):
         self.deregister(self, message.sender)
-        display_message(self.agent.aid.name, message.content)
+        self.agent.logger.log(self.agent.aid.name, message.content)
 
     # Manda as mensagens
     def notify(self, message):
@@ -50,12 +50,12 @@ class AnalisaLances(TimedBehaviour):
         # Se ja tiverem lances registrados, vemos o atual maior lance e definimos ele como novo minimo
         if self.agent.lances:
             novo_lance_minimo =  max(self.agent.lances.values())
-            display_message(self.agent.aid.name, 'Novo valor a bater {}'.format(novo_lance_minimo))
+            self.agent.logger.log(self.agent.aid.name, 'Novo valor a bater {}'.format(novo_lance_minimo))
 
         # Caso contrario, damos o primeiro lance minimo do leilao. Que deveria vir do objeto leiloado    
         else:
             novo_lance_minimo = self.agent.objeto_leiloado.valor_inicial
-            display_message(self.agent.aid.name, 'Iniciando leilão do item {} com valor inicial de R${}'.format(self.agent.objeto_leiloado.nome, novo_lance_minimo))
+            self.agent.logger.log(self.agent.aid.name, 'Iniciando leilão do item {} com valor inicial de R${}'.format(self.agent.objeto_leiloado.nome, novo_lance_minimo))
 
         # usa o protocolo do editor para mandar o novo lance minimo a todos os compradores
         message.set_content(f'lance:{novo_lance_minimo}')
@@ -68,9 +68,10 @@ class AgenteLeiloeiro(Agent):
     lances = {}
 
     # inicializando agente, protocolos e comportamentos
-    def __init__(self, aid, f, objeto):
+    def __init__(self, aid, f, objeto, logger):
         super(AgenteLeiloeiro, self).__init__(aid=aid, debug=False)
         self.f = f
+        self.logger = logger
         self.objeto_leiloado = objeto
         self.protocol = PublisherProtocol(self)
         self.behaviours.append(self.protocol)
@@ -93,6 +94,6 @@ class AgenteLeiloeiro(Agent):
                 #registramos o lance no nosso dicionario, que será analisado pelo AnalisaLances
                 self.lances[message.sender.name] = lance
                 
-                display_message(self.aid.localname,
+                self.logger.log(self.aid.localname,
                                 f'Lance recebido de {message.sender.name}, {lance} reais')
 
