@@ -1,5 +1,6 @@
 from agentes.agente_comprador import AgenteComprador
 from agentes.agente_leiloeiro import AgenteLeiloeiro
+from classes.objeto_leiloado import ObjetoLeiloado
 from pade.misc.utility import start_loop
 from pade.acl.messages import ACLMessage
 from pade.acl.filters import Filter
@@ -15,10 +16,13 @@ def main():
 
   agents = list()
   port = int(argv[1]) 
+
+  # criando objeto a ser leiloado
+  objeto = ObjetoLeiloado('Vaso Antigo', 40)
   
   # criando agente leiloeiro
   agente_leiloeiro = AgenteLeiloeiro(
-      AID(name=f'leiloeiro@localhost:{port}'),f)
+      AID(name=f'leiloeiro@localhost:{port}'),f, objeto)
   agents.append(agente_leiloeiro)  
 
   port += 1
