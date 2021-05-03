@@ -32,7 +32,7 @@ class AgenteComprador(Agent):
         self.logger = logger
         self.dinheiro = dinheiro
         self.f = f
-        self.logger.log(self.aid.localname, 'O agente {} possue R${}'.format(self.aid.localname, self.dinheiro))
+        self.logger.log(self.aid.localname, 'O agente {} possui R${}'.format(self.aid.localname, self.dinheiro))
 
     # helper function para mandar uma mensagem ao leiloeiro, usada pra enviar o lance do comprador
     def send_message(self, msg):
@@ -89,4 +89,4 @@ class AgenteComprador(Agent):
             if f'{message.content}'.startswith("vencedor:"):
                 # Aqui provavelmente encerrariamos as atividades
                 self.agent.log(self.aid.localname,
-                                f'Venci o leilao')
+                                f'Venci o leilao!!')
