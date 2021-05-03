@@ -70,6 +70,7 @@ class AnalisaLances(TimedBehaviour):
             self.agent.logger.log(self.agent.aid.name, 'Iniciando leilão do item {} com valor inicial de R${}'.format(self.agent.objeto_leiloado.nome, novo_lance_minimo))
 
         # usa o protocolo do editor para mandar o novo lance minimo a todos os compradores
+        self.agent.lances.clear()
         message.set_content(f'lance:{novo_lance_minimo}')
         self.notify(message)
 
