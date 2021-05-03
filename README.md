@@ -1,51 +1,55 @@
-# RepositorioTemplate
-Esse repositório é para ser utilizado pelos grupos como um template inicial, da home page do Projeto.
-
-**!! *Atenção: Renomeie o seu repositório para (Ano.Semestre)_(Grupo)_(Paradigma)_(NomeDoProjeto)*. !!** 
-
-Paradigmas:
- - Funcional
- - Logico
- - SMA
-
-**!! *Não coloque os nomes dos alunos no título do repositório*. !!**
-
-**!! *Exemplo de título correto: 2020.1_G1_Logico_ProjetoRoteirosAereos*. !!**
- 
- (Apague essa seção)
-
-# NomeDoProjeto
+# Leilão
 
 **Disciplina**: FGA0210 - PARADIGMAS DE PROGRAMAÇÃO - T01 <br>
-**Nro do Grupo**: XX<br>
-**Paradigma**: XXXXXXXXXX<br>
+**Nro do Grupo**: 04<br>
+**Paradigma**: SMA<br>
 
 ## Alunos
-|Matrícula | Aluno |
-| -- | -- |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
 
-## Sobre 
-Descreva o seu projeto em linhas gerais. 
+| Matrícula | Aluno                              |
+| --------- | ---------------------------------- |
+| 170033066 | Esio Gustavo Pereira Freitas       |
+| 170050939 | Lucas Dutra Ferreira do Nascimento |
+| 170017885 | Marcos Nery Borges Júnior          |
+| 170020461 | Pedro Henrique Andrade Féo         |
+| 170024334 | Youssef Muhamad                    |
+
+## Sobre
+
+O projeto cria três agentes e inicia um lance com o item Vaso Antigo e o valor de R$ 40,00. Cada agente vai dar um lance e o maior valor vai ser utilizado como valor inicial no próximo. O leilão acaba quando somente um agente realiza um lance.
 
 ## Screenshots
-Adicione 2 ou mais screenshots do projeto em termos de interface e/ou funcionamento.
 
-## Instalação 
-**Linguagens**: xxxxxx<br>
-**Tecnologias**: xxxxxx<br>
-Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
-Insira um manual ou um script para auxiliar ainda mais.
+O projeto sendo executado no terminal, com cada agente oferecendo um lance até o fim do leilão.
 
-## Uso 
-Explique como usar seu projeto, caso haja algum passo a passo após o comando de execução.
+![image](https://user-images.githubusercontent.com/29265857/116944855-a45d4500-ac4c-11eb-93f0-92662d207f03.png)
+
+Arquivo de log para manter a rastreabilidade do leilão:
+
+![image](https://user-images.githubusercontent.com/29265857/116945058-28afc800-ac4d-11eb-9ff1-8a1ef5e86141.png)
+
+
+## Instalação
+
+**Linguagens**: Python<br>
+**Tecnologias**: [Pade](https://pade.readthedocs.io/pt_BR/latest/)<br>
+
+#### Execução
+
+Para configurar todo o ambiente necessário utilize o seguinte comando do Docker Compose:
+
+```
+docker-compose up
+```
+
+## Uso
+
+Após a execução do comando o PADE irá criar o ambiente com os agentes leilão e iniciar o leilão.
 
 ## Vídeo
+
 Adicione 1 ou mais vídeos com a execução do projeto.
 
-## Outros 
-Quaisquer outras informações sobre seu projeto podem ser descritas a seguir.
-
 ## Fontes
-Caso utilize materiais de terceiros, referencie-os adequadamente.
+
+- PADE: https://pade.readthedocs.io/pt_BR/latest/
