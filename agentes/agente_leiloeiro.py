@@ -51,16 +51,14 @@ class AnalisaLances(TimedBehaviour):
         if self.agent.lances:
             # Verifica se existe apenas um agente concorrente
             # Caso positivo o vencedor é declarado e o programa é encerrado.
-            print(list(self.agent.lances.keys()))
-            print(list(self.agent.lances.values()))
             novo_lance_minimo =  max(self.agent.lances.values())
             if len(self.agent.lances) == 1:
                 winner = list(self.agent.lances.keys())[0]
                 self.agent.logger.log(self.agent.aid.name, f'O vencedor foi o comprador {winner}!')
-                message = ACLMessage(ACLMessage.INFORM)
-                message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-                message.add_receiver(AID(winner))
-                message.set_content(f'vencedor: {winner}')
+                msg = ACLMessage(ACLMessage.INFORM)
+                msg.add_receiver(AID(winner))
+                msg.set_content('vencedor')
+                self.agent.send(msg)
             else:
                 self.agent.logger.log(self.agent.aid.name, f'Novo valor a bater {novo_lance_minimo}')
 
