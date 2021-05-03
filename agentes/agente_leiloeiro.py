@@ -1,6 +1,6 @@
 from pade.behaviours.protocols import FipaSubscribeProtocol, TimedBehaviour
 from pade.misc.utility import display_message
-from pade.acl.messages import ACLMessage
+from pade.acl.messages import ACLMessage, AID
 from pade.core.agent import Agent
 
 # Protocolo do editor. Com isso, compradores podem assinar esse protocolo
@@ -49,8 +49,20 @@ class AnalisaLances(TimedBehaviour):
 
         # Se ja tiverem lances registrados, vemos o atual maior lance e definimos ele como novo minimo
         if self.agent.lances:
+            # Verifica se existe apenas um agente concorrente
+            # Caso positivo o vencedor é declarado e o programa é encerrado.
+            print(list(self.agent.lances.keys()))
+            print(list(self.agent.lances.values()))
             novo_lance_minimo =  max(self.agent.lances.values())
-            self.agent.logger.log(self.agent.aid.name, 'Novo valor a bater {}'.format(novo_lance_minimo))
+            if len(self.agent.lances) == 1:
+                winner = list(self.agent.lances.keys())[0]
+                self.agent.logger.log(self.agent.aid.name, f'O vencedor foi o comprador {winner}!')
+                message = ACLMessage(ACLMessage.INFORM)
+                message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                message.add_receiver(AID(winner))
+                message.set_content(f'vencedor: {winner}')
+            else:
+                self.agent.logger.log(self.agent.aid.name, f'Novo valor a bater {novo_lance_minimo}')
 
         # Caso contrario, damos o primeiro lance minimo do leilao. Que deveria vir do objeto leiloado    
         else:
