@@ -4,6 +4,7 @@ from pade.acl.messages import ACLMessage
 from pade.core.agent import Agent
 from pade.acl.aid import AID
 from random import randint
+from twisted.internet import reactor
 
 
 # Protocolo do assinante. Assina o protocolo do leiloeiro
@@ -32,7 +33,7 @@ class AgenteComprador(Agent):
         self.logger = logger
         self.dinheiro = dinheiro
         self.f = f
-        self.logger.log(self.aid.localname, 'O agente {} possue R${}'.format(self.aid.localname, self.dinheiro))
+        self.logger.log(self.aid.localname, 'O agente {} possui R${}'.format(self.aid.localname, self.dinheiro))
 
     # helper function para mandar uma mensagem ao leiloeiro, usada pra enviar o lance do comprador
     def send_message(self, msg):
@@ -67,17 +68,13 @@ class AgenteComprador(Agent):
             lance_minimo = float(str(msg).split(":")[1])
             
             # um criterio arbitrario, dizendo que o comprador nao vai dar um lance maior que 60% da grana que ele tem
-            if(lance_minimo >= self.dinheiro):
-                print('sem grana')
-                # retirar agente do leilão
-            else:
+            if(self.dinheiro >= lance_minimo):
                 # manda mensagem ao leiloeiro com o lance
                 valor_desejado = lance_minimo + lance_minimo * 0.4
                 valor =  self.dinheiro if valor_desejado > self.dinheiro else valor_desejado
                 novo_lance = randint(lance_minimo, int(valor))
                 self.send_message(f"lance:{novo_lance}")
-
-        
+    
     # Essa funcao aqui serve pra reagir a uma mensagem recebida pelo leiloeiro
     def react(self, message):
         super(AgenteComprador, self).react(message)
@@ -86,7 +83,8 @@ class AgenteComprador(Agent):
             # A ideia aqui é que o leiloeiro mandaria pro comprador uma mensagem com o prefixo vencedor
             # quando ele vencesse o leilao. Nesse caso o leiloeiro manda uma mensagem pra um comprador especifico
             # por isso nao usamos o SubscriberProtocol, que é pra quando a mensagem é pra todos os compradores 
-            if f'{message.content}'.startswith("vencedor:"):
+            if f'{message.content}'.startswith("vencedor"):
                 # Aqui provavelmente encerrariamos as atividades
-                self.agent.log(self.aid.localname,
-                                f'Venci o leilao')
+                self.logger.log(self.aid.localname,
+                                f'Venci o leilao!!')
+                reactor.callFromThread(reactor.stop)
